@@ -1,9 +1,23 @@
 import ckan.plugins as plugins
 from ckan.plugins import implements, toolkit
+from ckan.common import _
+import ckan.lib.activity_streams
+import ckan.logic.validators
 
 import logging
 
 log = logging.getLogger(__name__)
+
+
+# Monkey patch to add custom activity stream objects for comments
+log.warning("monkeypatching ckan.lib.activity_streams and ckan.logic.validators")
+
+def activity_stream_string_comment_added(context, activity):
+    return _("{actor} commented on {dataset}")
+ckan.lib.activity_streams.activity_stream_string_functions['comment added'] = activity_stream_string_comment_added
+ckan.lib.activity_streams.activity_stream_string_icons['comment added'] = 'comment'
+ckan.logic.validators.object_id_validators['comment added'] = ckan.logic.validators.package_id_exists
+# /Monkey patch
 
 
 class YtpCommentsPlugin(plugins.SingletonPlugin):
