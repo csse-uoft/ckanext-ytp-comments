@@ -15,7 +15,7 @@ setup(
     url='',
     license='',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    package_data={'': ['./**/*.html', './**/*.txt', './**/*.css']},
+    package_data={'': ['./**/*.html', './**/*.txt', './**/*.css', '*/i18n/**/*']},
     namespace_packages=['ckanext', 'ckanext.ytp', 'ckanext.ytp.comments'],
     include_package_data=True,
     zip_safe=False,
