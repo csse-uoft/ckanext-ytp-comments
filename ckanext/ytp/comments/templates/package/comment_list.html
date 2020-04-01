@@ -31,25 +31,21 @@
     <div class="comment-wrapper">
     {% for comment in thread.comments %}
         <!--{{ comment.id }}-->
-        <div class="comment">
+        <div class="comment" id="{{comment.id}}">
+
             {% if comment.state != 'deleted' %}
                 <!--<h3>{{ comment.subject }}</h3>-->
             {% else %}
                 <h3>{{ _('This comment was deleted.') }}</h3>
             {% endif %}
             <div class="content">
-            {% if comment.state != 'deleted' %}
-                {{ comment.content|safe }}
-            {% else %}
-                {{ _('This comment was deleted.') }}
-            {% endif %}
             <div class="submitted" style="text-align: right">
             <ul class="links list-inline">
             {% if comment.state == 'active' %}
                 <li>
-                    Par {{  h.linked_user(comment.user_id, 0, 10) }} le {{ h.render_datetime(comment.creation_date, "%d.%m.%y") }} à {{ h.render_datetime(comment.creation_date, "%Hh%M") }} 
+                    {{ h.linked_user(comment.user_id, 0, 10) }} <a href="#{{comment.id}}">[{{ h.render_datetime(comment.creation_date, "%d.%m.%y") }} {{ h.render_datetime(comment.creation_date, "%Hh%M") }}]</a>
                     {% if comment.modified_date %}
-                        (modifié le {{ h.render_datetime(comment.modified_date, "%d.%m.%Y") }} à {{ h.render_datetime(comment.modified_date, "%d.%m.%Y") }} )
+                        (modifié le [{{ h.render_datetime(comment.modified_date, "%d.%m.%Y") }} {{ h.render_datetime(comment.modified_date, "%d.%m.%Y") }}] )
                     {% endif %}
                 </li>
                 {% if h.check_access('package_update', {'id': pkg_id }) %}
@@ -60,13 +56,18 @@
                     <li><a onclick="ShowCommentForm('edit_{{ comment.id }}')">{{ _('Edit') }}</a></li>
                     {{ comment_form(comment, prefix='edit_', action='edit') }}
                 {% endif %}
-                {% if userobj %}
+                {#{% if userobj %}
                     <li><a onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</a> </li>
                     {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
-                {% endif %}
+                {% endif %}#}
             {% endif %}
             </ul>
             </div>
+            {% if comment.state != 'deleted' %}
+                {{ comment.content|safe }}
+            {% else %}
+                {{ _('This comment was deleted.') }}
+            {% endif %}
             </div>
             <hr/>
         </div>
