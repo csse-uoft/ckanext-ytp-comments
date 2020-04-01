@@ -1,5 +1,7 @@
+import os
 import ckan.plugins as plugins
 from ckan.plugins import implements, toolkit
+from ckan.lib.plugins import DefaultTranslation
 from ckan.common import _
 import ckan.lib.activity_streams
 import ckan.logic.validators
@@ -20,13 +22,14 @@ ckan.logic.validators.object_id_validators['comment added'] = ckan.logic.validat
 # /Monkey patch
 
 
-class YtpCommentsPlugin(plugins.SingletonPlugin):
+class YtpCommentsPlugin(plugins.SingletonPlugin, DefaultTranslation):
     implements(plugins.IRoutes, inherit=True)
     implements(plugins.IConfigurer, inherit=True)
     implements(plugins.IPackageController, inherit=True)
     implements(plugins.ITemplateHelpers, inherit=True)
     implements(plugins.IActions, inherit=True)
     implements(plugins.IAuthFunctions, inherit=True)
+    implements(plugins.ITranslation)
 
     # IConfigurer
 
@@ -37,6 +40,13 @@ class YtpCommentsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config, "templates")
         toolkit.add_public_directory(config, 'public')
         toolkit.add_resource('public/javascript/', 'comments_js')
+
+    def i18n_directory(self):
+        dn = os.path.dirname
+        return os.path.join(dn(dn(dn(dn(os.path.abspath(__file__))))), 'i18n')
+
+    def i18n_domain(self):
+        return 'ckanext-ytp-comments'
 
     def get_helpers(self):
         return {
