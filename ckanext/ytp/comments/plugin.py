@@ -1,18 +1,35 @@
+import os
 import ckan.plugins as plugins
 from ckan.plugins import implements, toolkit
+from ckan.lib.plugins import DefaultTranslation
+from ckan.common import _
+import ckan.lib.activity_streams
+import ckan.logic.validators
 
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class YtpCommentsPlugin(plugins.SingletonPlugin):
+# Monkey patch to add custom activity stream objects for comments
+log.warning("monkeypatching ckan.lib.activity_streams and ckan.logic.validators")
+
+def activity_stream_string_comment_added(context, activity):
+    return _("{actor} commented on {dataset}")
+ckan.lib.activity_streams.activity_stream_string_functions['comment added'] = activity_stream_string_comment_added
+ckan.lib.activity_streams.activity_stream_string_icons['comment added'] = 'comment'
+ckan.logic.validators.object_id_validators['comment added'] = ckan.logic.validators.package_id_exists
+# /Monkey patch
+
+
+class YtpCommentsPlugin(plugins.SingletonPlugin, DefaultTranslation):
     implements(plugins.IRoutes, inherit=True)
     implements(plugins.IConfigurer, inherit=True)
     implements(plugins.IPackageController, inherit=True)
     implements(plugins.ITemplateHelpers, inherit=True)
     implements(plugins.IActions, inherit=True)
     implements(plugins.IAuthFunctions, inherit=True)
+    implements(plugins.ITranslation)
 
     # IConfigurer
 
@@ -23,6 +40,13 @@ class YtpCommentsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config, "templates")
         toolkit.add_public_directory(config, 'public')
         toolkit.add_resource('public/javascript/', 'comments_js')
+
+    def i18n_directory(self):
+        dn = os.path.dirname
+        return os.path.join(dn(dn(dn(dn(os.path.abspath(__file__))))), 'i18n')
+
+    def i18n_domain(self):
+        return 'ckanext-ytp-comments'
 
     def get_helpers(self):
         return {

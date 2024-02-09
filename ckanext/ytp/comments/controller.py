@@ -94,6 +94,21 @@ class CommentController(BaseController):
                 abort(403)
 
             if success:
+
+                # add activity stream
+                context.update({
+                    'ignore_auth': True
+                })
+                activity_data = {
+                    'user_id':c.user,
+                    "object_id": dataset_id,
+                    "activity_type": "comment added",
+                    "data": {
+                        "package": c.pkg_dict
+                    }
+                }
+                get_action('activity_create')(context, activity_data)
+
                 h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))
 
         return render("package/read.html")

@@ -1,2 +1,3 @@
 recursive-include ckanext/ytp/comments/templates *
 recursive-include ckanext/ytp/comments/public *
+recursive-include i18n *
