@@ -22,7 +22,6 @@ log = logging.getLogger(__name__)
 #     return _("{actor} commented on {dataset}")
 # ckan.lib.activity_streams.activity_stream_string_functions['comment added'] = activity_stream_string_comment_added
 # ckan.lib.activity_streams.activity_stream_string_icons['comment added'] = 'comment'
-activity.logic.validators.object_id_validators['comment added'] = "package_id_exists"
 
 
 # /Monkey patch
@@ -42,6 +41,7 @@ class YtpCommentsPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def configure(self, config):
         log.info("Configuring comments module")
         ckan.cli.cli.ckan.add_command(ytp_cli.ytp)
+        activity.logic.validators.object_id_validators['comment added'] = "package_id_exists"
 
     # IConfigurer
     def update_config(self, config):
