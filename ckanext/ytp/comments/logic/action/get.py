@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy import asc, text
+
 import ckanext.ytp.comments.model as comment_model
 from ckan.lib.base import abort
 from ckan import logic
@@ -61,11 +63,11 @@ def thread_show(context, data_dict):
 
     if context.get('with_deleted') is not True:
         thread_dict['comments'] = [
-            c.as_dict() for c in comments.order_by('comment.creation_date asc').all()
+            c.as_dict() for c in comments.order_by(text('comment.creation_date asc')).all()
         ]
     else:
         thread_dict['comments'] = [
-            c.as_dict(only_active_children=False) for c in comments.order_by('comment.creation_date asc').all()
+            c.as_dict(only_active_children=False) for c in comments.order_by(text('comment.creation_date asc')).all()
         ]
 
     return thread_dict

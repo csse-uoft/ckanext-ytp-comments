@@ -1,13 +1,16 @@
 import uuid
 import datetime
+from urllib.parse import urlparse
 
 from sqlalchemy import Column, MetaData, ForeignKey, func
 from sqlalchemy import types
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
+import ckan
 from ckan.plugins import toolkit
-from ckan.lib.base import model, config
+from ckan.lib.base import config
+import ckan.model as model
 
 log = __import__('logging').getLogger(__name__)
 
@@ -19,7 +22,7 @@ COMMENT_PENDING = "pending"
 
 
 def make_uuid():
-    return unicode(uuid.uuid4())
+    return str(uuid.uuid4())
 
 
 def acceptable_comment_on(objtype):
@@ -48,7 +51,6 @@ class CommentThread(Base):
         We are only interested in the path, so we will strip out
         everything else
         """
-        from urlparse import urlparse
         parsed = urlparse(incoming)
 
         # Perhaps check on acceptable_comment_on()?
@@ -202,13 +204,12 @@ class Comment(Base):
             setattr(self, k, v)
 
         # Auto-set some values based on configuration
-        from pylons import config
-        if toolkit.asbool(config.get('ckan.comments.moderation', 'true')):
+        if toolkit.asbool(ckan.model.system_info.get_system_info('ckan.comments.moderation', 'true')):
             self.approval_status = COMMENT_PENDING
         else:
             # If user wants first comment moderated and the user who wrote this hasn't
             # got another comment, put it into moderation, otherwise approve
-            if toolkit.asbool(config.get('ckan.comments.moderation.first_only', 'true')) and \
+            if toolkit.asbool(ckan.model.system_info.get_system_info.get('ckan.comments.moderation.first_only', 'true')) and \
                     Comment.count_for_user(self.user, COMMENT_APPROVED) == 0:
                 self.approval_status = COMMENT_PENDING
             else:

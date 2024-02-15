@@ -1,0 +1,9 @@
+comments:
+  filter: rjsmin
+  output: ckanext-ytp-comments/%(version)s-comments.js
+  contents:
+    - js/comment_validation.js
+    - js/comments.js
+  extra:
+    preload:
+      - base/main

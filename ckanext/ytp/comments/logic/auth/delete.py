@@ -1,5 +1,5 @@
 import logging
-from pylons.i18n import _
+from ckan.common import _
 
 import ckan.authz as authz
 from ckan import logic

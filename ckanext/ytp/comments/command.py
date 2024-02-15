@@ -1,32 +1,25 @@
 import logging
+import click
 
-from ckan.lib.cli import CkanCommand
+@click.group(short_help=u"ytp comments commands.")
+def ytp():
+    pass
 
-
-class InitDBCommand(CkanCommand):
+@ytp.command()
+def initdb():
     """
     Initialises the database with the required tables
     Connects to the CKAN database and creates the comment
     and thread tables ready for use.
     """
-    summary = __doc__.split('\n')[0]
-    usage = __doc__
-    max_args = 0
-    min_args = 0
+    log = logging.getLogger(__name__)
+    log.info("starting command")
 
-    def __init__(self, name):
-        super(InitDBCommand, self).__init__(name)
+    import ckan.model as model
+    model.Session.remove()
+    model.Session.configure(bind=model.meta.engine)
 
-    def command(self):
-        log = logging.getLogger(__name__)
-        log.info("starting command")
-        self._load_config()
-
-        import ckan.model as model
-        model.Session.remove()
-        model.Session.configure(bind=model.meta.engine)
-
-        import ckanext.ytp.comments.model as cmodel
-        log.info("Initializing tables")
-        cmodel.init_tables()
-        log.info("DB tables are setup")
+    import ckanext.ytp.comments.model as cmodel
+    log.info("Initializing tables")
+    cmodel.init_tables()
+    log.info("DB tables are setup")

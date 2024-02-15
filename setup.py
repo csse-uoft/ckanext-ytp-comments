@@ -20,11 +20,16 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'lxml~=4.4.1'
+        # CKAN extensions should not list dependencies here, but in a separate
+        # ``requirements.txt`` file.
+        #
+        # http://docs.ckan.org/en/latest/extensions/best-practices.html
+        # add-third-party-libraries-to-requirements-txt
     ],
     message_extractors={
         'ckanext/ytp/comments': [
             ('**.py', 'python', None),
+            ('**.js', 'javascript', None),
             ('templates/**.html', 'ckan', None)
         ]
     },
@@ -34,5 +39,8 @@ setup(
 
         [paste.paster_command]
         initdb = ckanext.ytp.comments.command:InitDBCommand
+        
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
     ''',
 )
