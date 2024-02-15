@@ -40,8 +40,10 @@ class YtpCommentsPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # IConfigurerable
     def configure(self, config):
         log.info("Configuring comments module")
-        ckan.cli.cli.ckan.add_command(ytp_cli.ytp)
-        activity.logic.validators.object_id_validators['comment added'] = "package_id_exists"
+        if hasattr(ckan, 'cli') and hasattr(ckan.cli, 'cli'):
+            ckan.cli.cli.ckan.add_command(ytp_cli.ytp)
+        if hasattr(activity, 'logic'):
+            activity.logic.validators.object_id_validators['comment added'] = "package_id_exists"
 
     # IConfigurer
     def update_config(self, config):
