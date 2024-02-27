@@ -7,3 +7,9 @@ comments:
   extra:
     preload:
       - base/main
+
+comments-css:
+  filter: cssrewrite
+  output: ckanext-ytp-comments/%(version)s-comments.css
+  contents:
+    - css/comments.css

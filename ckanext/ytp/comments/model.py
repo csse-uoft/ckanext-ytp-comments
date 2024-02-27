@@ -248,6 +248,9 @@ class Comment(Base):
             d['comments'] = [c.as_dict() for c in self.children if c.state == 'active']
         else:
             d['comments'] = [c.as_dict() for c in self.children]
+        
+        if u:
+            d['userObj'] = {'id': self.user_id, 'name': u.name, 'fullname': u.fullname}
         return d
 
     @classmethod

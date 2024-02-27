@@ -45,7 +45,7 @@ def edit(dataset_id, comment_id):
         return base.abort(403)
 
     data_dict = clean_dict(dict_fns.unflatten(
-        tuplize_dict(parse_params(request.POST))))
+        tuplize_dict(parse_params(request.form))))
     data_dict['id'] = comment_id
     success = False
     try:
@@ -58,7 +58,7 @@ def edit(dataset_id, comment_id):
         return base.abort(403)
 
     if success:
-        return h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))     
+        return h.redirect_to(str('/dataset/%s#comment-%s' % (c.pkg.name, res['id'])))     
     return h.redirect_to(str('/dataset/%s' % c.pkg.name))                                   
 
 def reply(dataset_id, parent_id):
@@ -146,7 +146,7 @@ def _add_or_reply(dataset_id):
         }
         get_action('activity_create')(context, activity_data)
 
-        return h.redirect_to(str('/dataset/%s#comment_%s' % (c.pkg.name, res['id'])))
+        return h.redirect_to(str('/dataset/%s#comment-%s' % (c.pkg.name, res['id'])))
 
     return h.redirect_to(str('/dataset/%s' % c.pkg.name))
 
