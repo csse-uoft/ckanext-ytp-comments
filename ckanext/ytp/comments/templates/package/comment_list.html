@@ -87,6 +87,7 @@
             </div>
 
             <div class="comment-buttons">
+                <div class="comment-buttons-divider"></div>
                 {% if userobj and commentUser.id == userobj.id or h.check_access('package_update', {'id': pkg_id }) %}
                     <a class="delete-comment-button" href="/dataset/{{ pkg_id }}/comments/{{ id }}/delete">
                         <i class="fa-solid fa-xmark"></i>
