@@ -21,8 +21,8 @@
 {% endmacro %}
 
 {% macro comment_box(userobj, action, content="", hidden=True, id=None, mode=None) %}
-    <div {% if id and mode %}id="{{mode + '-' + id}}"{% endif %} class="comment-textarea-wrapper {% if hidden %}d-none{% endif %}"">
-        <div class="comment-avatar">
+    <div {% if id and mode %}id="{{mode + '-' + id}}"{% endif %} class="comment-textarea-wrapper {% if hidden %}d-none{% endif %}">
+        <div class="comment-avatar" onclick="window.open('/user/{{ userobj.name }}');">
             {{ h.user_image(userobj.id, size=40) }}
             <div class="comment-avatar-label">
                 <a href="/user/{{ userobj.name }}">{{ userobj.fullname or userobj.name }}</a>
@@ -58,7 +58,7 @@
 
 {% macro single_comment(id, commentUser, date, content, state='active', reply_to=None) %}
     <div class="single-comment-wrapper mb-1" id="comment-{{ id }}">
-        <div class="comment-avatar">
+        <div class="comment-avatar" onclick="window.open('/user/{{ userobj.name }}');">
             {{ h.user_image(commentUser.id, size=40) }}
             <div class="comment-avatar-label">
                 <a href="/user/{{ commentUser.name }}">{{ commentUser.fullname or commentUser.name }}</a>
@@ -87,7 +87,9 @@
             </div>
 
             <div class="comment-buttons">
-                <div class="comment-buttons-divider"></div>
+                {% if userobj %}
+                    <div class="comment-buttons-divider"></div>
+                {% endif %}
                 {% if userobj and commentUser.id == userobj.id or h.check_access('package_update', {'id': pkg_id }) %}
                     <a class="delete-comment-button" href="/dataset/{{ pkg_id }}/comments/{{ id }}/delete">
                         <i class="fa-solid fa-xmark"></i>
