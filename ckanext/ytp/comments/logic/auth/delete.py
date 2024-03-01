@@ -14,6 +14,7 @@ def comment_delete(context, data_dict):
     user = context['user']
 
     userobj = model.User.get(user)
+
     # If sysadmin.
     if authz.is_sysadmin(user):
         return {'success': True}
@@ -24,7 +25,7 @@ def comment_delete(context, data_dict):
     if not comment:
         return {'success': False, 'msg': _('Comment does not exist')}
 
-    if comment.user_id is not userobj.id:
+    if comment.user_id != userobj.id:
         return {'success': False, 'msg': _('User is not the author of the comment')}
 
     return {'success': True}
