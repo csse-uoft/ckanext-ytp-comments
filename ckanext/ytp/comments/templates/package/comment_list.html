@@ -152,5 +152,7 @@
     <hr/>
     {{ comment_box(userobj, pkg_id + "/comments/add", hidden=False) }}
 {% else %}
-    {{ _('Login to comment.') }}
+    <h5>
+        Please <a href="/user/login"> {{_('login')}} </a> or <a href="/user/register">register</a> to comment.
+    </h5>
 {% endif %}
