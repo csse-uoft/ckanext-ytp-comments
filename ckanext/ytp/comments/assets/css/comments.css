@@ -42,11 +42,16 @@
     text-align: center;
     width: 100%;
     padding: 1px 5px;
-    cursor: default;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-flow: row;
+}
+
+.comment-avatar:hover {
+    color: #fff;
+    text-decoration: underline;
 }
 
 .comment-avatar-label a {

@@ -25,7 +25,7 @@
         <div class="comment-avatar" onclick="window.open('/user/{{ userobj.name }}');">
             {{ h.user_image(userobj.id, size=40) }}
             <div class="comment-avatar-label">
-                <a href="#">{{ userobj.fullname or userobj.name }}</a>
+                {{ userobj.fullname or userobj.name }}
             </div>
         </div>
 
@@ -61,7 +61,7 @@
         <div class="comment-avatar" onclick="window.open('/user/{{ commentUser.name }}');">
             {{ h.user_image(commentUser.id, size=40) }}
             <div class="comment-avatar-label">
-                <a href="#">{{ commentUser.fullname or commentUser.name }}</a>
+                {{ commentUser.fullname or commentUser.name }}
             </div>
         </div>
 
