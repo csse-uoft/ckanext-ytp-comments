@@ -1,6 +1,8 @@
 
 {% asset 'ytp-comments/comments'%}
 {% asset 'ytp-comments/comments-css'%}
+{% set package_type = h.default_package_type() %}
+
 {% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add") %}
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}d-none{% endif %}" action="{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
         <div class="{{ action }}_form_errors form-errors alert alert-error d-none">
@@ -22,7 +24,7 @@
 
 {% macro comment_box(userobj, action, content="", hidden=True, id=None, mode=None) %}
     <div {% if id and mode %}id="{{mode + '-' + id}}"{% endif %} class="comment-textarea-wrapper {% if hidden %}d-none{% endif %}">
-        <div class="comment-avatar" onclick="window.open('/user/{{ userobj.name }}');">
+        <div class="comment-avatar" onclick="window.open('{{h.url_for('user.read', id=userobj.name) }}');">
             {{ h.user_image(userobj.id, size=40) }}
             <div class="comment-avatar-label">
                 {{ userobj.fullname or userobj.name }}
@@ -58,7 +60,7 @@
 
 {% macro single_comment(id, commentUser, date, content, state='active', reply_to=None) %}
     <div class="single-comment-wrapper mb-1" id="comment-{{ id }}">
-        <div class="comment-avatar" onclick="window.open('/user/{{ commentUser.name }}');">
+        <div class="comment-avatar" onclick="window.open('{{h.url_for('user.read', id=commentUser.name) }}');">
             {{ h.user_image(commentUser.id, size=40) }}
             <div class="comment-avatar-label">
                 {{ commentUser.fullname or commentUser.name }}
@@ -91,7 +93,7 @@
                     <div class="comment-buttons-divider"></div>
                 {% endif %}
                 {% if userobj and commentUser.id == userobj.id or h.check_access('package_update', {'id': pkg_id }) %}
-                    <a class="delete-comment-button" href="/dataset/{{ pkg_id }}/comments/{{ id }}/delete">
+                    <a class="delete-comment-button" href="{{ h.url_for('ytp_comments_' + package_type + '.delete', dataset_id=pkg_id, comment_id=id) }}">
                         <i class="fa-solid fa-xmark"></i>
                         {{ _('Delete') }}
                     </a>
@@ -116,9 +118,9 @@
         </div>
         
     </div>
-
-    {{ comment_box(userobj, pkg_id + '/comments/' + id + '/edit', content=content, id=id, mode='edit') }}
-    {{ comment_box(userobj, pkg_id + '/comments/' + id + '/reply', id=id, mode='reply') }}
+    
+    {{ comment_box(userobj, h.url_for('ytp_comments_' + package_type + '.edit', dataset_id=pkg_id, comment_id=id), content=content, id=id, mode='edit') }}
+    {{ comment_box(userobj, h.url_for('ytp_comments_' + package_type + '.reply', dataset_id=pkg_id, parent_id=id), id=id, mode='reply') }}
     
 
 {% endmacro %}
@@ -150,9 +152,9 @@
 
 {% if userobj %}
     <hr/>
-    {{ comment_box(userobj, pkg_id + "/comments/add", hidden=False) }}
+    {{ comment_box(userobj, h.url_for('ytp_comments_' + package_type + '.add', dataset_id=pkg_id), hidden=False) }}
 {% else %}
     <h5>
-        Please <a href="/user/login"> {{_('login')}} </a> or <a href="/user/register">register</a> to comment.
+        Please <a href="{{h.url_for('user.login')}}"> {{_('login')}} </a> or <a href="{{h.url_for('user.register')}}">register</a> to comment.
     </h5>
 {% endif %}
