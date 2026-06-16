@@ -1,1 +1,2 @@
-lxml==4.4.1
+lxml==6.1.1
+lxml_html_clean==0.4.5
